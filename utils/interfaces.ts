@@ -31,6 +31,28 @@ export interface Driver {
     qualifyingResult: QualifyingResult | null;
     class: CarClass;
     teamName: string;
+	license: DriverLicense | null;
+    isSpectator: boolean;
+    isAI: boolean;
+    estTimeIntoLap: number;
+}
+
+export interface LapData {
+    lapNumber: number;
+    fuelAtStartPct: number;
+    fuelAtStartLiters: number;
+    fuelUsedPct: number;
+    fuelUsedLiters: number;
+    lapTime: number;
+    sessionType: SessionType;
+}
+
+export interface DriverLicense {
+    iRating: number;
+    licenseLevel: number;
+    licenseSubLevel: number;
+    licenseName: string;
+    licenseColor: string | null;
 }
 
 export interface CarClass {
@@ -123,22 +145,25 @@ export type Connection =
 	"connected" |
 	"connecting"
 
-export interface DriverData {
-	tiresRemaining: {
-		left: {
-			front: number,
-			rear: number,
-		},
-		right: {
-			front: number,
-			rear: number,
-		}
-	},
-	fuel: {
-		remaining: number,
-		percent: number,
+	export interface DriverData {
+		tiresRemaining: {
+			left: {
+				front: number;
+				rear: number;
+			};
+			right: {
+				front: number;
+				rear: number;
+			};
+		};
+		fuel: {
+			remaining: number;
+			percent: number;
+		};
+		carIndex: number;
+		driver: Driver | null;
+		laps: LapData[];
 	}
-}
 
 export interface DismissedCard {
 	id: string;

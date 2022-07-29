@@ -70,7 +70,7 @@ const DriverCard = ({ driver, session, theme }: Props) => {
                         ) : ""}
                         <span className = "font-bold">Gear: <span className = "font-normal">{ driver.carData.gear }</span></span><br />
                         <span className = "font-bold">RPM: <span className = "font-normal">{ driver.carData.rpm.toFixed(0) }</span></span><br />    
-                        <span className="italic font-bold">{ driver.raceData.onPitRoad ? "In The Pits" : "" }</span> 
+                        <span className="italic font-bold">{ driver.raceData.onPitRoad ? "In The Pits" : "" }</span>
                     </div>
                 </div>
             </Card>

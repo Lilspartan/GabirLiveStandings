@@ -16,7 +16,7 @@ export default function Home() {
     const [loading, setLoading] = useState(true);
 
 	// Array of Driver objects, has a loading object by default
-    const [drivers, setDrivers] = useState<Driver[]>([{class: { car: "N/A", id: 0, color: "ffffff" }, teamName: "", carIndex: 0,name: "Waiting to Recieve Standings...",userID: 0,carNumber: "0",isPaceCar: false,raceData: {position: 1,onPitRoad: true,class: 0,f2Time: 0,lap: 1,lapsCompleted: 0,lapPercent: 0,fastRepairsUsed: 0,},carData: {trackSurface: "NotInWorld",steer: 0,rpm: 0,gear: 0},lapTimes: {last: 0,best: { time: 0, lap: 0 }},flags: [],qualifyingResult: null}])
+    const [drivers, setDrivers] = useState<Driver[]>([{class: { car: "N/A", id: 0, color: "ffffff" }, teamName: "", carIndex: 0,name: "Waiting to Recieve Standings...",userID: 0,carNumber: "0",isPaceCar: false,raceData: {position: 1,onPitRoad: true,class: 0,f2Time: 0,lap: 1,lapsCompleted: 0,lapPercent: 0,fastRepairsUsed: 0,},carData: {trackSurface: "NotInWorld",steer: 0,rpm: 0,gear: 0},lapTimes: {last: 0,best: { time: 0, lap: 0 }},flags: [],qualifyingResult: null, isAI: false, isSpectator: false, estTimeIntoLap: 0, license: null }])
 	
 	// Driver to show in the Driver Inspector
 	const [highlightedDriver, setHighlightedDriver] = useState<Driver | null>(null);
@@ -27,7 +27,7 @@ export default function Home() {
     const [flag, setFlag] = useState("");
     const [flagColor, setFlagColor] = useState(["#00000000","#00000000"]);
     const [channel, setChannel] = useState("");
-    const [driverData, setDriverData] = useState<DriverData>({tiresRemaining: { left: { front: 0, rear: 0 }, right: { front: 0, rear: 0 } },fuel: { remaining: 0, percent: 0 }});
+    const [driverData, setDriverData] = useState<DriverData>({tiresRemaining: { left: { front: 0, rear: 0 }, right: { front: 0, rear: 0 } },fuel: { remaining: 0, percent: 0 }, driver: null, carIndex: -1, laps: []});
     const [theme, setTheme] = useState<Theme>({teamNames: false, theme: "dark",backgroundImage: "https://i.gabirmotors.com/assets/other/carbon_fiber.jpg",backgroundColor: "#000000",useMetric: true,showTwitch:true,hideStandingsFeatures:[]})
     const [fastestLap, setFastestLap] = useState<FastestLap | null>(null);
     const [isStreamer, setIsStreamer] = useState(false);
@@ -230,12 +230,13 @@ export default function Home() {
                                                             (d.raceData.onPitRoad ? "opacity-50" : ""),
                                                             (fastestLap !== null && fastestLap.CarIdx === d.carIndex ? "text-purple-700 dark:text-purple-500" : ""),
                                                         ])}>
+                                                            <td><div className = {`h-1/1 ${d.carIndex === highlightedDriverIndex ? "bg-white" : ""} px-0.5 py-4`}></div></td>
                                                             <td>{session.focusedCarIndex === d.carIndex ? (
                                                                 <Tooltip message = {`The Camera is Focused on ${d.name}`}>
                                                                     <BsFillCameraVideoFill />
                                                                 </Tooltip>
                                                             ) : ""}</td>
-                                                            <td className="px-4 ">{d.raceData.position}</td>
+                                                            <td className="px-4">{d.raceData.position}</td>
                                                             <td className={`text-center text-black p-1 rounded-md`} style = {{ backgroundColor: `#${d.class.color}` }}>#{d.carNumber}</td>
                                                             <td className="pl-2 py-1">
                                                                 <a onClick={() => {
