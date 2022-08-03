@@ -3,7 +3,9 @@ import classNames from 'classnames';
 
 const Button = (props) => {
   let buttonStyles = [
-    props.block ? "block" : "",
+    props.block ? [
+      "block"
+    ] : "",
     "font-bold",
     "text-lg",
     "text-center",
@@ -24,7 +26,9 @@ const Button = (props) => {
         "dark:bg-white",
         "text-white",
         "dark:text-black",
-        "hover:text-xl",
+        props.block ? [
+          "hover:text-xl",
+        ] : "",
         "border-2",
         "border-[#00000050]",
         "dark:border-[#ffffff50]",
@@ -37,7 +41,9 @@ const Button = (props) => {
         "border-black",
         "dark:border-white",
         "border-2",
-        "hover:text-xl",
+        props.block ? [
+          "hover:text-xl",
+        ] : "",
         "active:text-lg",
       ]
   ]

@@ -34,6 +34,7 @@ export default function Home() {
     const [debug, setDebug] = useState(false);
     const [tags, setTags] = useState<null | UserTag[]>(null);
     const [isSmallScreen, setIsSmallScreen] = useState(true);
+    const [showFuel, setShowFuel] = useState(false);
 
     const router = useRouter();
 
@@ -61,6 +62,7 @@ export default function Home() {
             setChannel(parsed.options.channel);
             setIsStreamer(parsed.options.isStreamer);
             setTags(parsed.options.tags);
+            setShowFuel(parsed.options.fuelIsPublic);
 
             _d.forEach(d => {
                 if (d.raceData.position !== 0) newDrivers.push(d);
@@ -102,8 +104,8 @@ export default function Home() {
 
         setIsSmallScreen(window.innerWidth <= 1000);
 
-        window.addEventListener("resize", (size) => {
-        	setIsSmallScreen(size.target.innerWidth <= 1000);
+        window.addEventListener("resize", (size: UIEvent) => {
+        	setIsSmallScreen((size.target as Window).innerWidth <= 1000);
         })
     }, [])
 
@@ -232,9 +234,7 @@ export default function Home() {
                                                         ])}>
                                                             <td><div className = {`h-1/1 ${d.carIndex === highlightedDriverIndex ? "bg-white" : ""} px-0.5 py-4`}></div></td>
                                                             <td>{session.focusedCarIndex === d.carIndex ? (
-                                                                <Tooltip message = {`The Camera is Focused on ${d.name}`}>
-                                                                    <BsFillCameraVideoFill />
-                                                                </Tooltip>
+                                                                <BsFillCameraVideoFill />
                                                             ) : ""}</td>
                                                             <td className="px-4">{d.raceData.position}</td>
                                                             <td className={`text-center text-black p-1 rounded-md`} style = {{ backgroundColor: `#${d.class.color}` }}>#{d.carNumber}</td>
@@ -248,9 +248,7 @@ export default function Home() {
                                                                 </a>
                                                             </td>
                                                             <td>{(fastestLap !== null && fastestLap.CarIdx === d.carIndex) ? (
-                                                                <Tooltip message = {`${d.name} has the fastest lap`}>
-                                                                    <BsFillStopwatchFill className="text-purple-600 mx-2" />
-                                                                </Tooltip>
+                                                                <BsFillStopwatchFill className="text-purple-600 mx-2" />
                                                             ) : ""}</td>
                                                             <td>{displayTime}</td>
                                                             {true ? (
@@ -421,8 +419,12 @@ export default function Home() {
                                             </div>
                                         </div>
                                     </div>
-                                    <hr className="mx-4 my-4" />
-                                    <span className="font-bold">Fuel Remaining: <span className="font-normal">{convertToImperial(driverData.fuel.remaining, "L", theme.useMetric)[0].toFixed(3)} {theme.useMetric ? "L" : "Gallons"} ({(driverData.fuel.percent * 100).toFixed(3)}%)</span></span><br />
+                                    { showFuel ? (
+                                        <div>
+                                            <hr className="mx-4 my-4" />
+                                            <span className="font-bold">Fuel Remaining: <span className="font-normal">{convertToImperial(driverData.fuel.remaining, "L", theme.useMetric)[0].toFixed(3)} {theme.useMetric ? "L" : "Gallons"} ({(driverData.fuel.percent * 100).toFixed(3)}%)</span></span><br />
+                                        </div>
+                                    ) : <div /> }
                                 </>
                             ) : ""}
                         </Card>

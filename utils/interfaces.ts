@@ -190,7 +190,9 @@ export enum Type {
 }
 
 export interface Options {
-	channel: string
+	channel: string;
+	fuelIsPublic: boolean;
+	password: string;
 }
 
 export type StandingsFeature = 

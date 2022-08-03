@@ -8,7 +8,7 @@ const Card = (props:any) => {
     const maximize = () => { setOpen(true); }
 
 	return (
-		<div className = {`break-inside-avoid`}>
+		<div className = {`break-inside-avoid ${props.className}`}>
 			<div className = {`transition duration-300 p-4 bg-light-card-handle dark:bg-dark-card-handle flex flex-row justify-between ${open ? "rounded-t-lg" : "rounded-lg"} select-none`}>
 				<span className = "font-bold cursor-default">{ props.title || "Unnamed Window" }</span>
 				<span className = "">
