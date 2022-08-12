@@ -13,13 +13,13 @@ const LoadingIcon = ({ loading }: {loading:boolean}) => {
         setFade(true)
         setTimeout(() => {
             setShow(false);
-            enableBodyScroll(targetElement);
+            // enableBodyScroll(targetElement);
         }, 750)
     }
 
     useEffect(() => {
         targetElement = document.querySelector('body');
-        disableBodyScroll(targetElement);
+        // disableBodyScroll(targetElement);
         setTimeout(() => {
             setShowLogo(true);
         }, 500)

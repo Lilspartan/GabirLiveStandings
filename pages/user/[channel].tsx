@@ -21,25 +21,54 @@ export default function Home() {
 	// Driver to show in the Driver Inspector
 	const [highlightedDriver, setHighlightedDriver] = useState<Driver | null>(null);
     const [highlightedDriverIndex, setHighlightedDriverIndex] = useState<number | null>(null);
-    const [displayType, setDisplayType] = useState("Leader")
+
+    // Display mode to use in the standings card
+    // TODO: replace with a features array
+    const [displayType, setDisplayType] = useState("Leader");
+
+    // iRacing connection status (Not Pit Wall connection)
     const [connection, setConection] = useState<Connection>("connecting");
+
+    // iRacing session data
     const [session, setSession] = useState<Session>({focusedCarIndex: -1,flags: [],isPALeagueRace: false,session: {number: 0,type: "LOADING",timeRemaining: 0,fastRepairs: 0,fastestLap: null,},track: {name: "Unknown Track",city: "Unknown City",id: -1,country: "Unknown Country",temperature: "N/A",length: "N/A",},weather: {windSpeed: "N/A",temperature: "N/A",skies: "N/A"}})
+    
+    // The text to show for the current flag
     const [flag, setFlag] = useState("");
+
+    // The color to show for the current flag
     const [flagColor, setFlagColor] = useState(["#00000000","#00000000"]);
+
+    // twitch username of the user running the Pit Wall
     const [channel, setChannel] = useState("");
+
+    // Data about the driver running the Pit Wall
     const [driverData, setDriverData] = useState<DriverData>({tiresRemaining: { left: { front: 0, rear: 0 }, right: { front: 0, rear: 0 } },fuel: { remaining: 0, percent: 0 }, driver: null, carIndex: -1, laps: []});
+    
+    // Theme data, also includes preferences that should be saved between visits
     const [theme, setTheme] = useState<Theme>({teamNames: false, theme: "dark",backgroundImage: "https://i.gabirmotors.com/assets/other/carbon_fiber.jpg",backgroundColor: "#000000",useMetric: true,showTwitch:true,hideStandingsFeatures:[]})
+    
+    // Time and CarIndex for the driver with the fastest lap
     const [fastestLap, setFastestLap] = useState<FastestLap | null>(null);
+
+    // is the user a streamer? currently can only be true
     const [isStreamer, setIsStreamer] = useState(false);
-    const [debug, setDebug] = useState(false);
+
+    // set of tags to show on the pit wall
     const [tags, setTags] = useState<null | UserTag[]>(null);
+
+    // controls displaying of large elements like twitch chat
     const [isSmallScreen, setIsSmallScreen] = useState(true);
+
+    // Is the fuel data public of private
     const [showFuel, setShowFuel] = useState(false);
 
     const router = useRouter();
 
     const socketInitializer = async () => {
+        // Check for socket
         if (socket) return;
+
+        // Create new socket
         socket = io("https://streaming.gabirmotors.com");
 
         socket.on('connect', () => {
@@ -48,22 +77,31 @@ export default function Home() {
 
         console.log(`Connected to channel: ${router.query.channel}`);
 
+        // Deal with data upon receiving it
         socket.on(`standings_update-${router.query.channel}`, (data) => {
+            // If data has been received, then there is an iRacing connection
             setConection("connected")
-            let newDrivers = [];
-            let parsed = JSON.parse(data)
 
+            // Array that eill hold the sorted list of drivers and also excludes drivers with a position of 0
+            let newDrivers = [];
+
+            // JSON object of received data
+            let parsed = JSON.parse(data)
+            
+            // Sort the drivers array by position
             let _d = parsed.sessionRacers.sort((a, b) => {
                 return a.raceData.position - b.raceData.position;
             })
 
+            // Set data
             setSession(parsed.sessionInfo);
             setDriverData(parsed.driverData);
             setChannel(parsed.options.channel);
             setIsStreamer(parsed.options.isStreamer);
             setTags(parsed.options.tags);
             setShowFuel(parsed.options.fuelIsPublic);
-
+            
+            // Remove drivers with a position of 0
             _d.forEach(d => {
                 if (d.raceData.position !== 0) newDrivers.push(d);
             })
@@ -76,6 +114,7 @@ export default function Home() {
                 setFastestLap(fLap[0]);
             }
 
+            // If no data has been received for 5 seconds, set the connection to disconnected
             clearTimeout(connectionTimeout);
             connectionTimeout = setTimeout(() => {
                 console.log(drivers)
@@ -152,14 +191,16 @@ export default function Home() {
     return (
         <>
             <SEO
-                title={`Gabir Motors Pit Wall | ${channel}`}
+                title={`Gabir Motors Pit Wall ${channel !== "" ? "| " + channel : ""}`}
                 url={`user/${channel}`}
             />
 
             <Loading loading={loading} />
 
             <div id="bg" className={`${theme.theme === "dark" ? "dark" : ""} background min-h-screen`}>
-                {/* <Alert permaDismiss = {true} id = "new-layout">A few things have changed with the Pit Wall layout, if you run into any problems, please <a href="mailto:gabekrahulik@gmail.com?subject=Pit Wall Layout Issues" className = "font-semibold hover:underline" target = "_new">let me know</a></Alert> */}
+                {/* {showFuel ? (
+                    <Alert permaDismiss = {true} id = "fuel-page">Do you like numbers? If so, check out the new <a href={`/user/${channel}/fuel`} className = "font-semibold hover:underline">Fuel Page</a>!</Alert>
+                ): ""} */}
 
                 <div className = "flex flex-row justify-center w-full pointer-events-none fixed bottom-20 z-40">
                     <div id = "flagAlert" className = {`p-4 px-12 fixed z-40 m-4 rounded-lg flex flex-row drop-shadow-lg lg:mr-8 transition duration-200 origin-top ${flag === "" ? "scale-y-0" : "scale-y-100"}`} style={{
@@ -172,13 +213,13 @@ export default function Home() {
                     </div>
                 </div>
 
-                <span className="text-white fixed p-2 z-40 opacity-50">Gabir Motors Pit Wall V1.6</span>
+                <span className="text-white fixed p-2 z-40 opacity-50">Gabir Motors Pit Wall V1.7</span>
 
 
                 {!isSmallScreen && isStreamer ? <ChatCard theme={theme.theme} channel={channel} show = {theme.showTwitch} /> : <div></div>}
 
 
-                <div className="text-black dark:text-white px-4 pb-8 lg:px-16 columns-1 lg:columns-2 2xl:columns-3 gap-8 [column-fill:_auto] break-inside-avoid overflow-auto">
+                <div className="text-black dark:text-white px-4 pb-8 lg:px-16 columns-1 lg:columns-2 2xl:columns-3 gap-8 [column-fill:_auto] break-inside-avoid-column overflow-auto">
                     <div className = "mt-8 break-inside-avoid-column">
                         <Card id="standings-card" title={`Race Standings | ${(session.session.type === "PRACTICE" ? "Practicing" : (
                             session.session.type === "QUALIFY" ? "Qualifying" : (
@@ -421,8 +462,14 @@ export default function Home() {
                                     </div>
                                     { showFuel ? (
                                         <div>
+                                            {/* <div>
+                                                <span className="font-bold">Fuel Remaining: <span className="font-normal">{convertToImperial(driverData.fuel.remaining, "L", theme.useMetric)[0].toFixed(3)} {theme.useMetric ? "L" : "Gallons"} ({(driverData.fuel.percent * 100).toFixed(3)}%)</span></span><br />
+                                            </div> */}
+
                                             <hr className="mx-4 my-4" />
-                                            <span className="font-bold">Fuel Remaining: <span className="font-normal">{convertToImperial(driverData.fuel.remaining, "L", theme.useMetric)[0].toFixed(3)} {theme.useMetric ? "L" : "Gallons"} ({(driverData.fuel.percent * 100).toFixed(3)}%)</span></span><br />
+                                            <Button block self link = {`/user/${channel}/fuel`}>
+                                                Fuel Data
+                                            </Button>
                                         </div>
                                     ) : <div /> }
                                 </>
@@ -461,7 +508,7 @@ export default function Home() {
                         </Card>
                     </div>
 
-                    <div className = "mt-8 break-after-avoid">
+                    <div className = "mt-8 break-after-avoid-all">
                         <Card title="Settings">
                             <Button block={true} click={() => {
                                 setTheme({ ...theme, theme: (theme.theme === "dark" ? "light" : "dark") })
@@ -490,7 +537,7 @@ export default function Home() {
                         </Card>
                     </div>
 
-                    <div className = "mt-8 break-after-column">
+                    <div className = "mt-8 break-after-column break-before-avoid-column">
                         <Card title="Track Map">
                             <svg width="100%" height="auto" viewBox="0 0 111 36" fill="none" xmlns="http://www.w3.org/2000/svg">
                                 <path id="track" d="M92.6857 5.93787H17.6857C10.7821 5.93787 5.18567 11.5343 5.18567 18.4379C5.18567 25.3414 10.7821 30.9379 17.6857 30.9379H92.6857C99.5892 30.9379 105.186 25.3414 105.186 18.4379C105.186 11.5343 99.5892 5.93787 92.6857 5.93787Z" stroke="white" stroke-width="1" />

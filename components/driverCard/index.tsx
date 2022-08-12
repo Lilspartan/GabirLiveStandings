@@ -2,6 +2,7 @@ import { Driver, Session, Theme } from "../../utils/interfaces";
 import secondsToFormatted from '../../utils/secondsToFormatted';
 import { Card } from '../'
 import { BsChevronUp, BsChevronDown, BsDash } from 'react-icons/bs';
+import { FaRobot } from 'react-icons/fa';
 
 type Props = {
     driver: Driver | null;
@@ -39,6 +40,7 @@ const DriverCard = ({ driver, session, theme }: Props) => {
                             )}
                         </span> 
                     ) : ""}
+                    {/* <span className = "font-bold">License / iRating: <span className = {`font-normal text-center text-white p-1 rounded-md`} style = {{ backgroundColor: `#${driver.license.licenseColor}` }}>{ driver.license.licenseName.split('')[0] } {driver.license.licenseColor} { driver.license.iRating }</span><br /></span> */}
                 </div>
                 <div className = "flex flex-col md:flex-row">
                     <div className = "md:pr-8">
@@ -71,6 +73,7 @@ const DriverCard = ({ driver, session, theme }: Props) => {
                         <span className = "font-bold">Gear: <span className = "font-normal">{ driver.carData.gear }</span></span><br />
                         <span className = "font-bold">RPM: <span className = "font-normal">{ driver.carData.rpm.toFixed(0) }</span></span><br />    
                         <span className="italic font-bold">{ driver.raceData.onPitRoad ? "In The Pits" : "" }</span>
+                        { driver.isAI ? <FaRobot className = "inline-block mr-4 text-2xl my-auto" /> : "" }
                     </div>
                 </div>
             </Card>

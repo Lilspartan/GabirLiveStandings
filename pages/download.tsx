@@ -1,6 +1,5 @@
-import { useState, useEffect } from 'react';
-import { Card, Button, Loading, Alert, SEO } from '../components';
-import { FaItchIo } from 'react-icons/fa';
+import { useEffect } from 'react';
+import { SEO } from '../components';
 
 export default function Home() {
 	useEffect(() => {

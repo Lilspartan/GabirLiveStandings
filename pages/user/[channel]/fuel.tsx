@@ -136,8 +136,8 @@ export default function Home() {
     return (
         <>
             <SEO
-                title={`Gabir Motors Pit Wall | ${channel}`}
-                url={`private/${channel}`}
+                title={`Gabir Motors Pit Wall Fuel Calculations`}
+                url={`user/${channel}/fuel`}
             />
 
             <Loading loading={loading} />
@@ -145,7 +145,7 @@ export default function Home() {
             <div id="bg" className={`${theme.theme === "dark" ? "dark" : ""} background min-h-screen`}>
                 {/* <Alert permaDismiss = {true} id = "new-layout">A few things have changed with the Pit Wall layout, if you run into any problems, please <a href="mailto:gabekrahulik@gmail.com?subject=Pit Wall Layout Issues" className = "font-semibold hover:underline" target = "_new">let me know</a></Alert> */}
 
-                <span className="text-white fixed p-2 z-40 opacity-50">Gabir Motors Pit Wall V1.6</span>
+                <span className="text-white fixed p-2 z-40 opacity-50">Gabir Motors Pit Wall V1.7</span>
 
                 { showFuel || authenticated ? (
                     <div className="text-black dark:text-white p-10 pb-8">
@@ -192,7 +192,8 @@ export default function Home() {
                                 // console.log(lapsCalculated, runningTotalLiters, runningTotalLiters / lapsCalculated, convertToImperial((runningTotalLiters / lapsCalculated), "L", theme.useMetric)[0].toFixed(3))
                                 
                                 return `${ convertToImperial(averageLiters, "L", theme.useMetric)[0].toFixed(3)} ${theme.useMetric ? "L" : "Gallons"} (${(averagePct * 100).toFixed(3)}%)`;
-                            })() }</span></span><br />
+                            })() }</span></span><br /><br />
+                            <Button self link = {`/user/${channel}`}>Go Back</Button>
                         </Card>
 
                         <Card title = "Fuel Info" className = "mt-8">
@@ -233,6 +234,8 @@ export default function Home() {
                             
                             <input onChange = {(e) => { setInputPassword(e.target.value) }} type="text" className = "mt-6 rounded-lg bg-light-card-handle dark:bg-dark-card-handle py-2 px-4 transition duration-200 mx-4" placeholder='Password' value = {inputPassword}/>
                             <Button click = {checkPasswords}>Confirm</Button>
+                            <br /> <br />
+                            <Button self link = {`/user/${channel}`}>Go Back</Button>
                         </Card>
                     </div>
                 )}

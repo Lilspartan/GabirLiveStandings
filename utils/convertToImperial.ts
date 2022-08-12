@@ -3,6 +3,10 @@ const convertToImperial = (amount: number, unit: "L" | "C" | "M" | "KM", dontCon
         return [amount];
     }
 
+    // if (isNaN(amount)) {
+    //     return [12]
+    // }
+
     switch (unit) {
         case "L":
             return [(amount * 0.264172052)];

@@ -38,6 +38,14 @@ export default function Home() {
 				<div className = "text-black dark:text-white flex flex-col-reverse lg:flex-row justify-center">
 					<div className = "flex flex-col w-full pl-4">
 						<div className = "p-4">
+                            <h2 className = "text-3xl font-bold">V1.7 - The Fuel Update</h2>
+                            <h3 className = "text-xl italic font-bold">August 10, 2022</h3>
+
+                            <Paragraph>
+								
+							</Paragraph>
+                        </div>
+						<div className = "p-4">
                             <h2 className = "text-3xl font-bold">V1.6 - The Endurance Update</h2>
                             <h3 className = "text-xl italic font-bold">July 21, 2022</h3>
 

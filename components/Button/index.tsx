@@ -50,7 +50,7 @@ const Button = (props) => {
 
   if (props.link) {
     return (
-      <a href = {props.link}
+      <a href = {props.link} target = {props.self ? "_self" : "_blank"}
         className = {classNames(buttonStyles)}>{ props.children }</a>
     )
   } else {

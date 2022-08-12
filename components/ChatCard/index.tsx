@@ -80,7 +80,7 @@ const ChatCard = (props) => {
     }, [props.channel])
 
     return (
-        <div className = {`${props.show ? 'opacity-100' : 'opacity-0'}`}>
+        <div className = {`transition duration-250 ${props.show ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}>
             <div id = "" className = "fixed h-screen right-0 z-40 shadow-2xl flex flex-row" style={{width: width + 'px'}}>
                 <div className = "bg-light-card dark:bg-dark-card px-0 text-black dark:text-white flex flex-col justify-center select-none">
                     {!popoutChat ? <MdFirstPage  className = "text-2xl cursor-pointer absolute top-28" onClick={() => { setPopoutChat(true) }} /> : <div></div>}
