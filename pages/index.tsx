@@ -163,7 +163,7 @@ export default function Channels() {
                     <div className = "lg:px-20">
                       <h2 className = "text-2xl"><span className = "font-semibold">Time Remaining:</span> {new Date(previewData.session.session.timeRemaining * 1000).toISOString().substr(11, 8)}</h2>
                       <h2 className = "text-2xl"><span className = "font-semibold">Track:</span> {previewData.session.track.name}, {previewData.session.track.city}, {previewData.session.track.country}</h2>
-                      <h2 className = "text-2xl"><span className = "font-semibold">Car:</span> {previewData.driverData.driver.class.car}</h2>
+                      <h2 className = "text-2xl"><span className = "font-semibold">Car:</span> {previewData.driverData.driver !== null ? previewData.driverData.driver.class.car : "Failed to Load"}</h2>
                     </div>
                     
                     <div className = "flex flex-row justify-center">
