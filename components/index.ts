@@ -9,6 +9,7 @@ import Loading from './Loading';
 import Alert from './Alert';
 import SEO from './SEO';
 import Tooltip from './Tooltip';
+import RelativeCard from './RelativeCard';
 
 export {
   DriverCard,
@@ -22,4 +23,5 @@ export {
   Alert, 
   SEO,
   Tooltip,
+  RelativeCard
 }

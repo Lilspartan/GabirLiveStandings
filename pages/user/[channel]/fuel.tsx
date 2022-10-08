@@ -28,8 +28,7 @@ export default function Home() {
     const [authenticated, setAuthenticated] = useState(false);
     const [inputPassword, setInputPassword] = useState('');
 
-    const [startLap, setStartLap] = useState(0);
-    const [endLap, setEndLap] = useState(3);
+    const [lapsToCalculate, setLapsToCalculate] = useState([]);
     const [minimumUsedLiters, setMinimumUsedLiters] = useState(0.001);
     const [useRangeFilter, setUseRangeFilter] = useState(false);
 
@@ -101,23 +100,15 @@ export default function Home() {
     }, [password])
 
     useEffect(() => {
-        if (driverData.laps.length < 3) return;
-        if (startLap < driverData.laps[driverData.laps.length - 1].lapNumber) return setStartLap(driverData.laps[driverData.laps.length - 1].lapNumber);
-        if (endLap <= startLap) setEndLap(startLap + 1);
-
         let runningTotalLiters = 0;
         let runningTotalPct = 0;
         let lapsCalculated = 0;
 
-        if (useRangeFilter) {
-            let _reversed = [...driverData.laps].reverse();
-            if (_reversed === undefined) return;
-            for (let i = startLap + 1; i <= endLap + 1; i ++) {
-                if (_reversed[i].fuelUsedLiters !== -1 && _reversed[i].fuelUsedLiters > minimumUsedLiters) {
-                    runningTotalLiters += _reversed[i].fuelUsedLiters;
-                    runningTotalPct += _reversed[i].fuelUsedPct;
-                    lapsCalculated ++;
-                }
+        if (useRangeFilter && lapsToCalculate.length) {
+            for (let i = 0; i < lapsToCalculate.length; i ++) {
+                runningTotalLiters += lapsToCalculate[i].fuelUsedLiters;
+                runningTotalPct += lapsToCalculate[i].fuelUsedPct;
+                lapsCalculated ++;
             }
         } else {
             for (let i = 0; i < driverData.laps.length; i ++) {
@@ -128,10 +119,10 @@ export default function Home() {
                 }
             }
         }
-
+        
         setAverageLiters(runningTotalLiters / lapsCalculated);
         setAveragePct(runningTotalPct / lapsCalculated);
-    }, [startLap, endLap, useRangeFilter, minimumUsedLiters, driverData.laps])
+    }, [lapsToCalculate, useRangeFilter, minimumUsedLiters, driverData.laps])
 
     return (
         <>
@@ -153,10 +144,10 @@ export default function Home() {
                             <div className="flex flex-row gap-8 mb-8">
                                 <span className="font-bold text-4xl">Filters</span>
                                 
-                                <div>
+                                {/* <div>
                                     <span className = "font-bold text-lg"><Tooltip message='Any laps that used less than this amount of fuel will be ignored when calculating the average'><span className = "mr-2">Minimum Fuel Use (Liters)</span> <BsQuestionCircle /></Tooltip></span><br />
                                     <input onChange = {(e) => { setMinimumUsedLiters(Number(e.target.value)) }} type="number" className = "rounded-lg bg-light-card-handle dark:bg-dark-card-handle py-2 px-4 transition duration-200" placeholder='Minimum (Liters)' value = {minimumUsedLiters} id = "minimum" name = "minimum" />
-                                </div>
+                                </div> */}
 
                                 {driverData.laps.length > 5 ? (
                                     <div>
@@ -164,28 +155,9 @@ export default function Home() {
                                         <input onChange = {(e) => { setUseRangeFilter(e.target.checked) }} type="checkbox" className = "rounded-lg bg-light-card-handle dark:bg-dark-card-handle py-2 px-4 transition duration-200" checked = {useRangeFilter} />
                                     </div>
                                 ) : ""}
-
-                                { useRangeFilter ? (
-                                    <div>
-                                        <span className = "font-bold text-lg">Start</span><br />
-                                        <input onChange = {(e) => { 
-                                            if (Number(e.target.value) < 0) e.target.value = "0";
-                                            setStartLap(Number(e.target.value));   
-                                        }} type="number" className = "rounded-lg bg-light-card-handle dark:bg-dark-card-handle py-2 px-4 transition duration-200" placeholder='Range Start' value = {startLap} id = "start" name = "start" max = {driverData.laps.length - 3} min = {driverData.laps[driverData.laps.length - 1].lapNumber}/>
-                                    </div>
-                                ) : <div /> }
-
-                                { useRangeFilter ? (
-                                    <div>
-                                        <span className = "font-bold text-lg">End</span><br />
-                                        <input onChange = {(e) => { 
-                                            if (Number(e.target.value) > driverData.laps.length - 2) e.target.value = String(driverData.laps.length - 2);
-                                            setEndLap(Number(e.target.value));  
-                                        }}  type="number" className = "rounded-lg bg-light-card-handle dark:bg-dark-card-handle py-2 px-4 transition duration-200" placeholder='Range End' value = {endLap} id = "end" name = "end" max = {driverData.laps.length - 2} min = {driverData.laps[driverData.laps.length - 1].lapNumber}/>
-                                    </div>
-                                ) : <div /> }
                             </div>
 
+                            <span className="font-bold">Fuel Remaining: <span className="font-normal">{ convertToImperial(driverData.fuel.remaining, "L", theme.useMetric)[0].toFixed(3)} {theme.useMetric ? "L" : "Gallons"} ({(driverData.fuel.percent * 100).toFixed(3)}%)</span></span><br />
                             <span className="font-bold">Average Fuel Used: <span className="font-normal">{ (() => {
                                 
                                 
@@ -197,8 +169,10 @@ export default function Home() {
                         </Card>
 
                         <Card title = "Fuel Info" className = "mt-8">
+                            {/* {JSON.stringify(lapsToCalculate)} */}
                             <table className="border-separate">
                                 <thead>
+                                    { useRangeFilter && <th></th> }
                                     <th>Lap</th>
                                     <th>Fuel at Start</th>
                                     <th>Fuel Used</th>
@@ -212,6 +186,20 @@ export default function Home() {
 
                                         return (
                                             <tr className = "text-center">
+                                                { useRangeFilter && lap.fuelUsedLiters !== -1 && (
+                                                    <td>
+                                                        <input type="checkbox" name="" id="" checked = {lapsToCalculate.filter((l) => { return l.lapNumber === lap.lapNumber }).length > 0} onClick = {(e) => {
+                                                            if (e.target.checked) {
+                                                                setLapsToCalculate([ ...lapsToCalculate, lap ])
+                                                            } else {
+                                                                setLapsToCalculate(lapsToCalculate.filter((fLap) => { return fLap.lapNumber !== lap.lapNumber }))
+                                                            }
+                                                        }}/>
+                                                    </td>
+                                                )}
+
+                                                { useRangeFilter && lap.fuelUsedLiters === -1 && <td></td> }
+
                                                 <td className = "p-1">{ lap.lapNumber }</td>
                                                 <td className = "p-1">{ convertToImperial(lap.fuelAtStartLiters, "L", theme.useMetric)[0].toFixed(3)} {theme.useMetric ? "L" : "Gallons"} ({(lap.fuelAtStartPct * 100).toFixed(3)}%)</td>
                                                 <td className = "p-1">{ lap.fuelUsedLiters !== -1 ? (

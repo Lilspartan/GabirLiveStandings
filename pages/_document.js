@@ -22,6 +22,20 @@ export default class MyDocument extends Document {
           `,
             }}
           />
+
+          {/* <script src='https://storage.ko-fi.com/cdn/scripts/overlay-widget.js'></script>
+          <script dangerouslySetInnerHTML={{
+              __html: `
+              kofiWidgetOverlay.draw('gabekrahulik', {
+                'type': 'floating-chat',
+                'floating-chat.donateButton.text': 'Donate',
+                'floating-chat.donateButton.background-color': '#323842',
+                'floating-chat.donateButton.text-color': '#fff'
+              });
+          `,
+            }}>
+          </script> */}
+
         </Head>
         <body>
           <Main />

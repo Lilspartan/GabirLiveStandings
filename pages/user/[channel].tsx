@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Driver, Session, Connection, DriverData, FastestLap, UserTag, Theme } from '../../utils/interfaces';
-import { DriverCard, Card, ChatCard, ConnectionCard, NotesCard, Button, Loading, Alert, SEO, Tooltip } from '../../components';
+import { DriverCard, Card, ChatCard, ConnectionCard, NotesCard, Button, Loading, Alert, SEO, Tooltip, RelativeCard } from '../../components';
 import convertToImperial from '../../utils/convertToImperial';
 import classnames from 'classnames';
 import io from 'socket.io-client';
@@ -479,6 +479,10 @@ export default function Home() {
                     
                     <div className = "mt-8 break-inside-avoid-column">
                         <DriverCard driver={highlightedDriver} session={session} theme = {theme} />
+                    </div>
+
+                    <div className = "mt-8 break-after-column break-before-avoid-column">
+                        <RelativeCard drivers = {drivers} highlightedDriver = {highlightedDriver} session = {session} theme = {theme} />
                     </div>
 
                     <div className = "2xl:break-before-column mt-8 break-inside-avoid">
