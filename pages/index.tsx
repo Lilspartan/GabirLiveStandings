@@ -37,13 +37,8 @@ export default function Channels() {
 	const [loading, setLoading] = useState(false);
 	const [channels, setChannels] = useState([ "" ])
   const [selected, setSelected] = useState("");
-  const [scroll, setScroll] = useState(0);
-  const [height, setHeight] = useState(0);
-  const [width, setWidth] = useState(0);
   const [previewData, setPreviewData] = useState<PreviewData | null>(null);
   const [previewLoading, setPreviewLoading] = useState(true);
-  const [mouseX, setMouseX] = useState(0);
-  const [mouseY, setMouseY] = useState(0);
 
   useEffect(() => {
     if (selected === "" || selected === undefined) return;
@@ -61,10 +56,6 @@ export default function Channels() {
     })()
   }, [selected])
 
-  const handleScroll = () => {
-    setScroll(window.scrollY);
-  }
-
   const handleMouseMove = (e) => {
     document.getElementById("features-screenshot").style.transform = `scale(1) perspective(1000px) rotateX(${(((e.clientY - (window.innerHeight / 2)) / window.innerHeight * -5).toFixed(1))}deg) rotateY(${((e.clientX - (window.innerWidth / 2)) / window.innerWidth * 5).toFixed(1)}deg)`
     console.log(document.getElementById("features-screenshot").style.transform, e.clientX, e.clientY);
@@ -80,13 +71,9 @@ export default function Channels() {
       setLoading(false);
     })()
 
-    setHeight(window.innerHeight);
-    setWidth(window.innerWidth);
-    window.addEventListener("scroll", handleScroll);
     window.addEventListener("mousemove", handleMouseMove);
 
     return () => {
-      window.removeEventListener("scroll", handleScroll);
       window.removeEventListener("mousemove", handleMouseMove);
     }
 	}, [])

@@ -11,6 +11,25 @@ import { useRouter } from 'next/router'
 let socket;
 let connectionTimeout;
 
+type DataCard = 
+    "standings" | 
+    "notepad" |
+    "pitwall" |
+    "welcome" |
+    "connection" |
+    "tires&fuel" |
+    "inspector" |
+    "relative" |
+    "location" |
+    "raceinfo" |
+    "settings" |
+    "map";
+
+interface LayoutCard {
+    card: DataCard,
+    breakAfter: boolean;
+}
+
 export default function Home() {
 	// Show the loading screen
     const [loading, setLoading] = useState(true);
@@ -72,10 +91,8 @@ export default function Home() {
         socket = io("https://streaming.gabirmotors.com");
 
         socket.on('connect', () => {
-            console.log('connected');
+            console.log('Connected to socket');
         })
-
-        console.log(`Connected to channel: ${router.query.channel}`);
 
         // Deal with data upon receiving it
         socket.on(`standings_update-${router.query.channel}`, (data) => {
@@ -108,16 +125,15 @@ export default function Home() {
 
             if (newDrivers.length) setDrivers(newDrivers);
 
-            let fLap = parsed.sessionInfo.session.fastestLap;
+            let fastestLap = parsed.sessionInfo.session.fastestLap;
 
-            if (fLap !== null && fLap[0].CarIdx !== 255) {
-                setFastestLap(fLap[0]);
+            if (fastestLap !== null && fastestLap[0].CarIdx !== 255) {
+                setFastestLap(fastestLap[0]);
             }
 
             // If no data has been received for 5 seconds, set the connection to disconnected
             clearTimeout(connectionTimeout);
             connectionTimeout = setTimeout(() => {
-                console.log(drivers)
                 if (drivers.length <= 1) setConection("disconnected")
             }, 5000)
         })
@@ -132,26 +148,32 @@ export default function Home() {
     }, [drivers])
 
     useEffect(() => {
+        // Theme settings from localStorage
         let localTheme = localStorage.getItem("theme");
         if (localTheme !== null) {
             setTheme(JSON.parse(localTheme));
         }
 
+        // If no data is recieved for the first 25 seconds after opening the pit wall, set the connection to disconnected
         setTimeout(() => {
             if (drivers.length <= 1) setConection("disconnected")
         }, 25000)
 
+        // There are some features (like twitch chat) that should not be displayed on smaller screens
         setIsSmallScreen(window.innerWidth <= 1000);
 
-        window.addEventListener("resize", (size: UIEvent) => {
-        	setIsSmallScreen((size.target as Window).innerWidth <= 1000);
-        })
+        const resizeListener = (size: UIEvent) => setIsSmallScreen((size.target as Window).innerWidth <= 1000);
+        window.addEventListener("resize", resizeListener)
+
+        return () => {
+            window.removeEventListener("resize", resizeListener);
+        }
     }, [])
 
     useEffect(() => {
         if (router.query.channel === undefined) return;
 
-        console.log(router.query.channel)
+        console.log("Connected to " + router.query.channel + "'s Pit Wall")
 
         socketInitializer().then(() => {
             setLoading(false);
@@ -213,7 +235,7 @@ export default function Home() {
                     </div>
                 </div>
 
-                <span className="text-white fixed p-2 z-40 opacity-50">Gabir Motors Pit Wall V1.7</span>
+                <span className="text-white fixed p-2 z-40 opacity-50">Gabir Motors Pit Wall V1.8</span>
 
 
                 {!isSmallScreen && isStreamer ? <ChatCard theme={theme.theme} channel={channel} show = {theme.showTwitch} /> : <div></div>}
@@ -283,7 +305,7 @@ export default function Home() {
                                                                 <a onClick={() => {
                                                                     setHighlightedDriverIndex(d.carIndex);
                                                                     setHighlightedDriver(d);
-                                                                    console.log(d.carIndex)
+                                                                    console.log("Highlighting driver with index: " + d.carIndex)
                                                                 }} className="block cursor-pointer">
                                                                     {theme.teamNames ? d.teamName : d.name}
                                                                 </a>
@@ -405,7 +427,13 @@ export default function Home() {
                                     ) : ""}
                                 </div>
                             </div>
-                        ) : ""}
+                        ) : (
+                            <div id="CurrentRacer" className = "break-inside-avoid">
+                                <div className={`handle block p-4 bg-light-card-handle dark:bg-dark-card-handle transition duration-300 rounded-lg`}>
+                                    <span className="font-bold text-center lg:text-left block lg:inline">Loading {router.query.channel}'s Pit Wall</span>
+                                </div>
+                            </div>
+                        )}
                     </div>
                     
                     <div className = "mt-8 break-inside-avoid-column">

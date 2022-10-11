@@ -183,7 +183,8 @@ export type StandingsFeature =
 	"QUALIFYINGPOSITIONS" |
 	"CLASSCOLORS" |
 	"STOPWATCHICON" |
-	"FOCUSEDDRIVER";
+	"FOCUSEDDRIVER" |
+	"HIGHLIGHTEDDRIVER";
 
 export type UserTag =
 	"early" |

@@ -1,3 +1,9 @@
+/**
+ * Converts from metric units to imperial units
+ * @param {number} amount - the metric amount
+ * @param {"L"|"C"|"M"|"KM"} unit - The unit of the measurement
+ * @param {boolean} dontConvert - do or do not convert
+*/
 const convertToImperial = (amount: number, unit: "L" | "C" | "M" | "KM", dontConvert: boolean): [number] => {
     if (dontConvert) {
         return [amount];
