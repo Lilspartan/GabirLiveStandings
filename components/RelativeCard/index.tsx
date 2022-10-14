@@ -16,12 +16,12 @@ const RelativeCard = ({ drivers, highlightedDriver, session, theme }: Props) => 
     const [indexOfHighlight, setIndexOfHighlight] = useState(0);
 
     useEffect(() => {
-        setSortedDrivers(drivers.sort((a, b) => {
+        setSortedDrivers([...drivers].sort((a, b) => {
             return b.raceData.lapPercent - a.raceData.lapPercent
         }))
 
         for (let i = 0; i < sortedDrivers.length; i ++) {
-            if (sortedDrivers[i].carIndex === highlightedDriver.carIndex) {
+            if (highlightedDriver !== null && sortedDrivers[i].carIndex === highlightedDriver.carIndex) {
                 setIndexOfHighlight(i);
             }
         }
