@@ -220,9 +220,9 @@ export default function Home() {
             <Loading loading={loading} />
 
             <div id="bg" className={`${theme.theme === "dark" ? "dark" : ""} background min-h-screen`}>
-                {/* {showFuel ? (
-                    <Alert permaDismiss = {true} id = "fuel-page">Do you like numbers? If so, check out the new <a href={`/user/${channel}/fuel`} className = "font-semibold hover:underline">Fuel Page</a>!</Alert>
-                ): ""} */}
+                {showFuel ? (
+                    <Alert permaDismiss = {true} id = "fuel-page-2">Check out the new and improved <a href={`/user/${channel}/fuel`} className = "font-semibold hover:underline">Fuel Page</a>!</Alert>
+                ): ""}
 
                 <div className = "flex flex-row justify-center w-full pointer-events-none fixed bottom-20 z-40">
                     <div id = "flagAlert" className = {`p-4 px-12 fixed z-40 m-4 rounded-lg flex flex-row drop-shadow-lg lg:mr-8 transition duration-200 origin-top ${flag === "" ? "scale-y-0" : "scale-y-100"}`} style={{
