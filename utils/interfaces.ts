@@ -176,6 +176,14 @@ export interface Options {
 	fuelIsPublic: boolean;
 	password: string;
 	profile_icon: string;
+	charity?: CharityOptions | null;
+}
+
+export interface CharityOptions {
+	link: string;
+	description: string | null;
+	name: string;
+	callToAction: string;
 }
 
 export type StandingsFeature = 

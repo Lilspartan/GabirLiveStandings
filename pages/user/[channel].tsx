@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Driver, Session, Connection, DriverData, FastestLap, UserTag, Theme } from '../../utils/interfaces';
+import { Driver, Session, Connection, DriverData, FastestLap, UserTag, Theme, CharityOptions } from '../../utils/interfaces';
 import { DriverCard, Card, ChatCard, ConnectionCard, NotesCard, Button, Loading, Alert, SEO, Tooltip, RelativeCard } from '../../components';
 import convertToImperial from '../../utils/convertToImperial';
 import classnames from 'classnames';
@@ -10,25 +10,6 @@ import { useRouter } from 'next/router'
 
 let socket;
 let connectionTimeout;
-
-type DataCard = 
-    "standings" | 
-    "notepad" |
-    "pitwall" |
-    "welcome" |
-    "connection" |
-    "tires&fuel" |
-    "inspector" |
-    "relative" |
-    "location" |
-    "raceinfo" |
-    "settings" |
-    "map";
-
-interface LayoutCard {
-    card: DataCard,
-    breakAfter: boolean;
-}
 
 export default function Home() {
 	// Show the loading screen
@@ -81,6 +62,14 @@ export default function Home() {
     // Is the fuel data public of private
     const [showFuel, setShowFuel] = useState(false);
 
+    // Options containing charity information
+    const [charity, setCharity] = useState<CharityOptions | null>({
+        link: "https://tiltify.com/+pa-league/pa-league-gives-back-2023",
+        description: null,
+        name: "The PA League Gives Back 2023",
+        callToAction: "Donate",
+    });
+
     const router = useRouter();
 
     const socketInitializer = async () => {
@@ -99,7 +88,7 @@ export default function Home() {
             // If data has been received, then there is an iRacing connection
             setConection("connected")
 
-            // Array that eill hold the sorted list of drivers and also excludes drivers with a position of 0
+            // Array that will hold the sorted list of drivers and also excludes drivers with a position of 0
             let newDrivers = [];
 
             // JSON object of received data
@@ -118,6 +107,10 @@ export default function Home() {
             setTags(parsed.options.tags);
             setShowFuel(parsed.options.fuelIsPublic);
             
+            if (parsed.options.charity) {
+                setCharity(parsed.options.charity);
+            }
+
             // Remove drivers with a position of 0
             _d.forEach(d => {
                 if (d.raceData.position !== 0) newDrivers.push(d);
@@ -220,10 +213,6 @@ export default function Home() {
             <Loading loading={loading} />
 
             <div id="bg" className={`${theme.theme === "dark" ? "dark" : ""} background min-h-screen`}>
-                {showFuel ? (
-                    <Alert permaDismiss = {true} id = "fuel-page-2">Check out the new and improved <a href={`/user/${channel}/fuel`} className = "font-semibold hover:underline">Fuel Page</a>!</Alert>
-                ): ""}
-
                 <div className = "flex flex-row justify-center w-full pointer-events-none fixed bottom-20 z-40">
                     <div id = "flagAlert" className = {`p-4 px-12 fixed z-40 m-4 rounded-lg flex flex-row drop-shadow-lg lg:mr-8 transition duration-200 origin-top ${flag === "" ? "scale-y-0" : "scale-y-100"}`} style={{
                         backgroundColor: flagColor[0],
@@ -409,7 +398,6 @@ export default function Home() {
 
                                     {tags !== null ? (
                                         <span className="mx-auto lg:ml-2 block lg:inline mt-4">
-                                            {/* {JSON.stringify(tags, null, 4)} */}
                                             {tags.map((tag, i) => {
                                                 if (tag === "beta_tester") {
                                                     return <span className="mx-1 px-4 py-1 rounded-full bg-blue-600 text-white whitespace-nowrap">Beta Tester</span>
@@ -539,6 +527,22 @@ export default function Home() {
 
                         </Card>
                     </div>
+
+                    { charity !== null && (
+                        <div className = "mt-8 break-inside-avoid">
+                            <Card title="Charity">
+                                <div>
+                                    <h2 className = "text-xl text-center">{ channel || router.query.channel} is raising money for <strong>{ charity.name }</strong></h2>
+
+                                    { charity.description !== null && (
+                                        <p>{ charity.description }</p>
+                                    ) }
+
+                                    <Button block link = {charity.link}>{ charity.callToAction }</Button>
+                                </div>
+                            </Card>
+                        </div>
+                    ) }
 
                     <div className = "mt-8 break-after-avoid-all">
                         <Card title="Settings">
