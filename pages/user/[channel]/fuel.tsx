@@ -136,7 +136,7 @@ export default function Home() {
             <div id="bg" className={`${theme.theme === "dark" ? "dark" : ""} background min-h-screen`}>
                 {/* <Alert permaDismiss = {true} id = "new-layout">A few things have changed with the Pit Wall layout, if you run into any problems, please <a href="mailto:gabekrahulik@gmail.com?subject=Pit Wall Layout Issues" className = "font-semibold hover:underline" target = "_new">let me know</a></Alert> */}
 
-                <span className="text-white fixed p-2 z-40 opacity-50">Gabir Motors Pit Wall V1.8</span>
+                <span className="text-white fixed p-2 z-40 opacity-50">Gabir Motors Pit Wall V1.9</span>
 
                 { showFuel || authenticated ? (
                     <div className="text-black dark:text-white p-10 pb-8">

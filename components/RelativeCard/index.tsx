@@ -65,7 +65,7 @@ const RelativeCard = ({ drivers, highlightedDriver, session, theme }: Props) => 
                                     <td className="pl-2 py-1">
                                         {theme.teamNames ? d.teamName : d.name}
                                     </td>
-                                    <td>{ secondsToFormatted(d.estTimeIntoLap - highlightedDriver.estTimeIntoLap) }</td>
+                                    <td className = "pl-2">{ d.carIndex !== indexOfHighlight && secondsToFormatted(d.estTimeIntoLap - highlightedDriver.estTimeIntoLap) }</td>
                                 </tr>
                             )
                         })}

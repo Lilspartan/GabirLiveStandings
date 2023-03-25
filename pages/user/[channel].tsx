@@ -224,7 +224,7 @@ export default function Home() {
                     </div>
                 </div>
 
-                <span className="text-white fixed p-2 z-40 opacity-50">Gabir Motors Pit Wall V1.8</span>
+                <span className="text-white fixed p-2 z-40 opacity-50">Gabir Motors Pit Wall V1.9</span>
 
 
                 {!isSmallScreen && isStreamer ? <ChatCard theme={theme.theme} channel={channel} show = {theme.showTwitch} /> : <div></div>}

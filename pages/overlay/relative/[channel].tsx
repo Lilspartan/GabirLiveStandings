@@ -1,8 +1,7 @@
 import { useState, useEffect } from 'react';
-import { Session, Driver, FastestLap } from '../../../utils/interfaces';
+import { Session, Driver } from '../../../utils/interfaces';
 import classnames from 'classnames';
 import io from 'socket.io-client';
-import { BsFillStopwatchFill } from 'react-icons/bs';
 import { useRouter } from 'next/router';
 import secondsToFormatted from '../../../utils/secondsToFormatted';
 
@@ -10,7 +9,6 @@ let socket;
 
 const TrackOverlay = () => {
     const [drivers, setDrivers] = useState<Driver[]>([{class: { car: "N/A", id: 0, color: "ffffff" }, teamName: "", carIndex: 0,name: "Waiting to Recieve Standings...",userID: 0,carNumber: "0",isPaceCar: false,raceData: {position: 1,onPitRoad: true,class: 0,f2Time: 0,lap: 1,lapsCompleted: 0,lapPercent: 0,fastRepairsUsed: 0,},carData: {trackSurface: "NotInWorld",steer: 0,rpm: 0,gear: 0},lapTimes: {last: 0,best: { time: 0, lap: 0 }},flags: [],qualifyingResult: null, isAI: false, isSpectator: false, estTimeIntoLap: 0, license: null }])
-    const [fastestLap, setFastestLap] = useState<FastestLap | null>(null);
     const [session, setSession] = useState<Session>({
 		flags: [
 			
@@ -65,18 +63,10 @@ const TrackOverlay = () => {
 			})
 			
 			_d.forEach(d => {
-				if (d.raceData.position !== 0) newDrivers.push(d);
+				newDrivers.push(d);
 			})
 			
 			if (newDrivers.length) setDrivers(newDrivers);
-
-			let fLap = parsed.sessionInfo.session.fastestLap;
-
-			// console.log(fLap)
-
-			if (fLap !== null && fLap[0].CarIdx !== 255) {
-				setFastestLap(fLap[0]);
-			}
 		})
 	}
 
@@ -120,29 +110,27 @@ const TrackOverlay = () => {
 						</thead>
 
 						<tbody>
-							{sortedDrivers.map((d, i) => {
-								if (Math.abs(i - indexOfHighlight) > 3) return;
-								
-								let time = secondsToFormatted(d.estTimeIntoLap - highlightedDriver.estTimeIntoLap)
+                        {sortedDrivers.map((d, i) => {
+                            if (Math.abs(i - indexOfHighlight) > 3) return;
 
-								return (
-									<tr className={classnames([
-										"",
-										(d.raceData.onPitRoad ? "opacity-50" : ""),
-									])}>
-										<td className="px-4 font-bold text-right">{d.raceData.position}</td>
-										<td className={`text-center text-black p-1 rounded-md`} style = {{ backgroundColor: `#${d.class.color}` }}>#{d.carNumber}</td>
-										<td className={`pl-2 py-1 ${d.raceData.lap > highlightedDriver.raceData.lap ? "text-red-400" : (d.raceData.lap < highlightedDriver.raceData.lap ? "text-blue-400" : "")}`}>
-											{ d.name}
-										</td>
-										<td className = "pl-2">{ Number(time) !== 0 ? time : ""}</td>
-									</tr>
-								)
-							})}
-							
+                            return (
+                                <tr className={classnames([
+                                    "",
+                                    (d.raceData.onPitRoad ? "opacity-50" : ""),
+                                ])}>
+                                    <td className="px-4">{d.raceData.position}</td>
+                                    <td className={`text-center text-black p-1 rounded-md`} style = {{ backgroundColor: `#${d.class.color}` }}>#{d.carNumber}</td>
+                                    <td className="pl-2 py-1">
+                                        {d.name}
+                                    </td>
+                                    <td className = "pl-4">{ d.carIndex !== session.focusedCarIndex && secondsToFormatted(d.estTimeIntoLap - highlightedDriver.estTimeIntoLap) }</td>
+                                </tr>
+                            )
+                        })}
+                        
 
 
-						</tbody>
+                    </tbody>
 					</table>
 				) : ""}
             </div>
