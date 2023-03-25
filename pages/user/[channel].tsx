@@ -102,8 +102,6 @@ export default function Home() {
             setTags(parsed.options.tags);
             setShowFuel(parsed.options.fuelIsPublic);
             
-            console.log(parsed.options)
-
             if (parsed.options.charity || parsed.options.charity === null) {
                 setCharity(parsed.options.charity);
             }
