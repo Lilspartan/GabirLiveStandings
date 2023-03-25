@@ -40,7 +40,7 @@ export default function Home() {
       "wardingo37",
       "mattcribbsracing",
       "biorebek",
-      "hoekeheef",
+      "hoekenheef",
       "draxond",
       "ravenholm337",
       "red_stapler",
@@ -49,6 +49,7 @@ export default function Home() {
       "ducksoup",
       "veeveevonvore",
       "swettpants",
+      "BioRebel",
       "gargosthemighty"
     ])
     const [channelData, setChannelData] = useState([]);
@@ -75,11 +76,11 @@ export default function Home() {
             const res = await fetch("https://api.twitch.tv/helix/streams?" + userIds, {
                 headers: {
                     'Client-ID': 'v354nab7jsgctl2zww4ic69tc4l3hf',
-                    'Authorization': 'Bearer y6xe4ery875beb62qv3s9l1v574zv2'
+                    'Authorization': 'Bearer u26uz5iwqqe7o0flwqr517ww2r79oq'
                 }
             });
             const data = await res.json();
-
+            console.log(data)
             // game_name = "iracing";
             let _tempData = [ ...data.data ];
             let _tempIracing = [];
