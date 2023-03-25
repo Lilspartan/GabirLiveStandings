@@ -63,12 +63,7 @@ export default function Home() {
     const [showFuel, setShowFuel] = useState(false);
 
     // Options containing charity information
-    const [charity, setCharity] = useState<CharityOptions | null>({
-        link: "https://tiltify.com/+pa-league/pa-league-gives-back-2023",
-        description: null,
-        name: "The PA League Gives Back 2023",
-        callToAction: "Donate",
-    });
+    const [charity, setCharity] = useState<CharityOptions | null>(null);
 
     const router = useRouter();
 
@@ -107,7 +102,9 @@ export default function Home() {
             setTags(parsed.options.tags);
             setShowFuel(parsed.options.fuelIsPublic);
             
-            if (parsed.options.charity) {
+            console.log(parsed.options)
+
+            if (parsed.options.charity || parsed.options.charity === null) {
                 setCharity(parsed.options.charity);
             }
 
