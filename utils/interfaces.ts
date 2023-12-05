@@ -163,6 +163,8 @@ export type Connection =
 		carIndex: number;
 		driver: Driver | null;
 		laps: LapData[];
+		firstRPM: number;
+		shiftRPM: number;
 	}
 
 export interface DismissedCard {

@@ -71,8 +71,11 @@ export default function Home() {
         // Check for socket
         if (socket) return;
 
+        // prompt to create a new socket just in case
+        await fetch('/api/socket')
+
         // Create new socket
-        socket = io("https://streaming.gabirmotors.com");
+        socket = io();
 
         socket.on('connect', () => {
             console.log('Connected to socket');

@@ -45,7 +45,11 @@ const TrackOverlay = () => {
 
     const socketInitializer = async () => {
 		if (socket) return;
-		socket = io("https://streaming.gabirmotors.com");
+		// prompt to create a new socket just in case
+        await fetch('/api/socket')
+
+        // Create new socket
+        socket = io();
 
 		socket.on('connect', () => {
 			console.log('connected');
